@@ -14,7 +14,7 @@ API_KEY_CUSTOM_HEADER = os.getenv('API_KEY_CUSTOM_HEADER')
 SWAGGER_URL = os.getenv('SWAGGER_URL')
 DEBUG = os.getenv('DEBUG', False) == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
-# AUTH_USER_MODEL = 'authentication.User'
+AUTH_USER_MODEL = 'authentication.User'
 
 
 # Application definition
@@ -26,14 +26,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rangefilter',
     'rest_framework',
     'rest_framework_api_key',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'drf_yasg',
+    'phonenumber_field',
 
-
+    'authentication',
 ]
 
 SWAGGER_SETTINGS = {
@@ -63,7 +65,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 ROOT_URLCONF = 'core.urls'
 CSRF_TRUSTED_ORIGINS = ['https://*.investlink.io', 'https://127.0.0.1:8080']
@@ -178,12 +179,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
