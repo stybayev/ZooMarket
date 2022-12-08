@@ -107,3 +107,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     objects = UserManager()
+
+    class Meta:
+        verbose_name = "Пользователь"
+        verbose_name_plural = "01 Пользователи"
+
