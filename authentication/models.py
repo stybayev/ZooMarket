@@ -101,7 +101,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True, db_index=True,
                               verbose_name='E-mail')
-    phone_number = PhoneNumberField(max_length=255,)
+    phone_number = PhoneNumberField(max_length=255, )
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -131,6 +131,19 @@ class User(AbstractBaseUser, PermissionsMixin):
                     for item in getattr(self, rel.related_name).all():
                         item.delete()
         self.save(update_fields=['is_deleted', ])
+
+    @property
+    def tokens(self):
+        return self._generate_jwt_token()
+
+    def _generate_jwt_token(self):
+        refresh = RefreshToken.for_user(self)
+        token = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
+
+        return token
 
 
 class Pet(models.Model):
