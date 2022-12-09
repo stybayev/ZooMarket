@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin)
+from django.db.models.deletion import get_candidate_relations_to_delete
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib import auth
 from django.apps import apps
@@ -9,12 +10,14 @@ from django.contrib.auth.hashers import (
 )
 from django.db import models
 
-
 from phonenumber_field.modelfields import PhoneNumberField
 
 
 # Create your models here.
 class UserManager(BaseUserManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
+
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
@@ -86,20 +89,27 @@ class User(AbstractBaseUser, PermissionsMixin):
     GENDER_CHOICES = [('male', 'Мужской'),
                       ('female', 'Женский'), ]
 
-    first_name = models.CharField(max_length=255, null=True, blank=True, verbose_name='Имя')
+    first_name = models.CharField(max_length=255, verbose_name='Имя')
 
-    last_name = models.CharField(max_length=255, null=True, blank=True, verbose_name='Фамилия')
+    last_name = models.CharField(max_length=255, verbose_name='Фамилия')
 
     gender = models.CharField(choices=GENDER_CHOICES, max_length=100, verbose_name='Пол', )
 
     date_of_birth = models.DateField(null=True, blank=True, verbose_name='Дата рождения')
 
-    email = models.EmailField(max_length=255, unique=True, db_index=True, null=False, blank=False,
+    add_pet_status = models.BooleanField(default=False, verbose_name='Статус добавления питомца', null=True, blank=True)
+
+    email = models.EmailField(max_length=255, unique=True, db_index=True,
                               verbose_name='E-mail')
-    phone_number = PhoneNumberField(max_length=255, null=True, blank=True)
+    phone_number = PhoneNumberField(max_length=255,)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False, verbose_name='Заблокирован')
+
+    reason_for_blocking = models.TextField(verbose_name='Причина блокировки', null=True, blank=True)
+
+    loyalty_level = models.PositiveIntegerField(verbose_name='Уровень лояльности', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
 
@@ -112,3 +122,46 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = "Пользователь"
         verbose_name_plural = "01 Пользователи"
 
+    def delete(self, using=None, keep_parents=False):  # noqa
+        self.is_deleted = True
+        delete_candidates = get_candidate_relations_to_delete(self.__class__._meta)
+        if delete_candidates:
+            for rel in delete_candidates:
+                if rel.on_delete.__name__ == 'CASCADE' and rel.one_to_many and not rel.hidden:
+                    for item in getattr(self, rel.related_name).all():
+                        item.delete()
+        self.save(update_fields=['is_deleted', ])
+
+
+class Pet(models.Model):
+    name = models.CharField(max_length=255, verbose_name='Имя')
+
+    age = models.PositiveIntegerField(verbose_name='Возраст', )
+
+    pet_type = models.ForeignKey('authentication.PetType',
+                                 on_delete=models.SET_DEFAULT,
+                                 verbose_name='Вид питомца',
+                                 related_name='pet', default='')
+    user = models.ForeignKey(get_user_model(),
+                             null=True, blank=True,
+                             verbose_name='Владелец питомца',
+                             on_delete=models.PROTECT,
+                             related_name='pet')
+
+    def __str__(self):
+        return f"{self.name} - {self.age}"
+
+    class Meta:
+        verbose_name = "Питомец"
+        verbose_name_plural = "02 Питомец"
+
+
+class PetType(models.Model):
+    title = models.CharField(max_length=255, verbose_name='Вид питомца')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Вид питомца"
+        verbose_name_plural = "03 Вид питомца"
