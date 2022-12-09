@@ -65,9 +65,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return tokens
 
 class LoginSerializer(serializers.ModelSerializer):
-    # phone_number = serializers.CharField(
-    #     required=True, min_length=3,
-    #     error_messages={"blank": "Введите Номер телефона."})
+    phone_number = serializers.CharField(
+        required=True, min_length=3,
+        error_messages={"blank": "Введите Номер телефона."})
     tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
