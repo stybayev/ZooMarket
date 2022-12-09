@@ -68,10 +68,10 @@ class LoginSerializer(serializers.ModelSerializer):
     # phone_number = serializers.CharField(
     #     required=True, min_length=3,
     #     error_messages={"blank": "Введите Номер телефона."})
+    tokens = serializers.SerializerMethodField()
 
     def get_tokens(self, obj):
         user = get_user_model().objects.get(phone_number=obj['phone_number'])
-        print(user)
 
         return {
             'access': user.tokens.get('access'),
@@ -84,18 +84,21 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):  # noqa
         phone_number = attrs.get('phone_number', None)
-        user = get_user_model().objects.get(phone_number=phone_number)
+        authenticate(phone_number=phone_number, )
 
-        self.user = authenticate(email=user.email, password=user.password)
-        print(self.user)
+        user = get_user_model().objects.filter(phone_number=phone_number).exists()
+        if user:
+            user_in_db = get_user_model().objects.get(phone_number=phone_number)
 
-        if not self.user:
+            if not user_in_db.is_active:
+                raise AuthenticationFailed('Аккаунт отключен, обратитесь к администратору')
+
+            if user_in_db.is_deleted:
+                raise AuthenticationFailed('Пользователь с таким номером телефона заблокирован!')
+
+        if not user:
             raise AuthenticationFailed('Такого пользователя не существует!')
 
-        if not self.user.is_active:
-            raise AuthenticationFailed('Аккаунт отключен, обратитесь к администратору')
 
-        if self.user.is_deleted:
-            raise AuthenticationFailed('Пользователь с таким номером телефона заблокирован!')
         return super().validate(attrs)
 

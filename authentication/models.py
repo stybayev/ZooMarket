@@ -101,7 +101,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True, db_index=True,
                               verbose_name='E-mail')
-    phone_number = PhoneNumberField(max_length=255, )
+    phone_number = PhoneNumberField(max_length=255, unique=True,)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -111,7 +111,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     loyalty_level = models.PositiveIntegerField(verbose_name='Уровень лояльности', null=True, blank=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'phone_number'
 
     def __str__(self):
         return self.email

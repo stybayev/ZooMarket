@@ -68,7 +68,7 @@ def custom_exception_handler(exc, context):  # noqa
 
         if isinstance(exc, AuthenticationFailed):
             return Responses.error_response(error_messages=messages.TEXT_AUTHENTICATION_FAILED,
-                                            status_code=401)
+                                            status_code=404)
 
         if isinstance(exc, exceptions.EmailVerifyError):
             return Responses.error_response(error_messages=messages.EMAIL_VERIFIED,

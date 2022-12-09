@@ -36,5 +36,5 @@ SMS_BLOCKED = 'Связаться с администраторами платф
 TEXT_COUNTRY_NOT_EXISTS = 'Мы не смогли найти страну с таким ISO кодом'
 INVALID_PHONE_NUMBER_FORMAT = 'Вы неправильно ввели Номер телефона'
 TEXT_SUCCESSFUL_AVATAR_CHANGE = 'Вы успешно сменили изображение профиля'
-TEXT_AUTHENTICATION_FAILED = 'Вы ввели неправильный логин или пароль'
+TEXT_AUTHENTICATION_FAILED = 'Пользователя с таким номера телефона не существует'
 TEXT_SUCCESSFUL_USER_DELETE = 'Аккаунт успешно удален!'
