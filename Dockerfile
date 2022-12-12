@@ -6,4 +6,5 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN apt-get update -y
 RUN apt-get install gcc -y
 RUN pip install -r requirements.txt
+RUN apt-get update && apt-get -y install postgresql
 COPY . /code

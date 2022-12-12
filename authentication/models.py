@@ -111,7 +111,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     loyalty_level = models.PositiveIntegerField(verbose_name='Уровень лояльности', null=True, blank=True)
 
-    USERNAME_FIELD = 'phone_number'
+    USERNAME_FIELD = 'email'
 
     def __str__(self):
         return self.email
