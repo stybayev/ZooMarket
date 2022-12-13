@@ -23,7 +23,7 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Investlink Backend API",
+        title="ZooMarket - Loyalty API",
         default_version='v1',
         description="List of API urls of backend application",
         terms_of_service="https://www.google.com/policies/terms/",

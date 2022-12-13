@@ -13,6 +13,24 @@ from rest_framework.exceptions import AuthenticationFailed
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(
+        max_length=255, min_length=3,
+        required=True,
+        error_messages={"blank": "Введите имя"})
+
+    last_name = serializers.CharField(
+        max_length=255, min_length=3,
+        required=True,
+        error_messages={"blank": "Введите фамилию"})
+
+    gender = serializers.CharField(
+        required=True,
+        error_messages={"blank": "Введите пол"})
+
+    date_of_birth = serializers.DateField(
+        required=True,
+        error_messages={"blank": "Введите дату рождения"})
+
     email = serializers.EmailField(
         max_length=255, min_length=3,
         validators=[UniqueValidator(queryset=get_user_model().objects.all(),
@@ -36,10 +54,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'gender', 'date_of_birth',
         )
 
-    # def validate(self, data):
-    #     phone_number = str(data.get('phone_number', None)).strip()
-    #     validate_phone_number(phone_number=phone_number)
-    #     return super().validate(data)
+    def validate(self, data):
+        return super().validate(data)
 
     """
     Создание объекта. Данные в конструктор передаются уже проверенными
@@ -65,6 +81,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         return tokens
 
+
 class LoginSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(
         required=True, min_length=3,
@@ -81,7 +98,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['phone_number', 'tokens',]
+        fields = ['phone_number', 'tokens', ]
 
     def validate(self, attrs):  # noqa
         phone_number = attrs.get('phone_number', None)
@@ -96,10 +113,7 @@ class LoginSerializer(serializers.ModelSerializer):
             if not user_in_db.is_active:
                 raise AuthenticationFailedIsActiveAPIException('Аккаунт отключен, обратитесь к администратору')
 
-
         if not user:
             raise AuthenticationFailed('Такого пользователя не существует!')
 
-
         return super().validate(attrs)
-
