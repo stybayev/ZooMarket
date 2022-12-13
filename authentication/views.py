@@ -22,6 +22,8 @@ from authentication import services
 from phonenumbers.phonenumberutil import region_code_for_number
 import phonenumbers
 
+from .models import Pet, PetType
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -49,5 +51,26 @@ class LoginAPIView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PetCreateAPIView(generics.GenericAPIView):
+    serializer_class = serializers.PetCreateSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        name = serializer.data.get('name')
+        age = serializer.data.get('age')
+        pet_type, created = PetType.objects.get_or_create(title=serializer.data.get('pet_type')['title'])
+
+        pet = Pet.objects.create(
+            user=user,
+            name=name,
+            age=age,
+            pet_type=pet_type)
 
         return Response(serializer.data, status=status.HTTP_200_OK)

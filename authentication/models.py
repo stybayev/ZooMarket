@@ -15,7 +15,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 class UserManager(BaseUserManager):
-
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
@@ -99,7 +98,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True, db_index=True,
                               verbose_name='E-mail')
-    phone_number = PhoneNumberField(max_length=255, unique=True,)
+    phone_number = PhoneNumberField(max_length=255, unique=True, )
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -142,7 +141,9 @@ class Pet(models.Model):
     pet_type = models.ForeignKey('authentication.PetType',
                                  on_delete=models.SET_DEFAULT,
                                  verbose_name='Вид питомца',
-                                 related_name='pet', default='')
+                                 related_name='pet', default='',
+                                 blank=True, null=True)
+
     user = models.ForeignKey(get_user_model(),
                              null=True, blank=True,
                              verbose_name='Владелец питомца',

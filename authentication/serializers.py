@@ -8,8 +8,24 @@ from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from .exceptions import TokenErrorAPIException, InvalidSizeAPIException, InvalidFormatAPIException, \
     AuthenticationFailedAPIException, AuthenticationFailedIsActiveAPIException
-from .models import User
+from .models import User, Pet, PetType
 from rest_framework.exceptions import AuthenticationFailed
+
+
+class ChoiceField(serializers.ChoiceField):
+    def to_representation(self, obj):
+        if obj == '' and self.allow_blank:
+            return obj
+        return self._choices[obj]
+
+    def to_internal_value(self, data):
+        if data == '' and self.allow_blank:
+            return ''
+
+        for key, val in self._choices.items():
+            if val == data:
+                return key
+        self.fail('invalid_choice', input=data)
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -23,7 +39,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         required=True,
         error_messages={"blank": "Введите фамилию"})
 
-    gender = serializers.CharField(
+    gender = serializers.ChoiceField(
+        choices=get_user_model().GENDER_CHOICES,
         required=True,
         error_messages={"blank": "Введите пол"})
 
@@ -34,7 +51,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         max_length=255, min_length=3,
         validators=[UniqueValidator(queryset=get_user_model().objects.all(),
-                                    message='Введите E-mail')],
+                                    message='Данный email уже зарегистрирован в нашей системе')],
         error_messages={"blank": "Введите E-mail адрес"})
 
     password = serializers.CharField(
@@ -117,3 +134,17 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed('Такого пользователя не существует!')
 
         return super().validate(attrs)
+
+
+class PetTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PetType
+        fields = ['title']
+
+
+class PetCreateSerializer(serializers.ModelSerializer):
+    pet_type = PetTypeSerializer()
+    class Meta:
+        model = Pet
+        fields = ['name', 'age', 'pet_type']
+        read_only_fields = ['user',]
