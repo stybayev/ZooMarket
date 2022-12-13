@@ -15,8 +15,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_deleted=False)
 
     use_in_migrations = True
 
@@ -105,7 +103,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_deleted = models.BooleanField(default=False, verbose_name='Заблокирован')
+    blocked = models.BooleanField(default=False, verbose_name='Заблокирован')
 
     reason_for_blocking = models.TextField(verbose_name='Причина блокировки', null=True, blank=True)
 
@@ -121,16 +119,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "01 Пользователи"
-
-    def delete(self, using=None, keep_parents=False):  # noqa
-        self.is_deleted = True
-        delete_candidates = get_candidate_relations_to_delete(self.__class__._meta)
-        if delete_candidates:
-            for rel in delete_candidates:
-                if rel.on_delete.__name__ == 'CASCADE' and rel.one_to_many and not rel.hidden:
-                    for item in getattr(self, rel.related_name).all():
-                        item.delete()
-        self.save(update_fields=['is_deleted', ])
 
     @property
     def tokens(self):

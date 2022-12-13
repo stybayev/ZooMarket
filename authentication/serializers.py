@@ -6,7 +6,8 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from .exceptions import TokenErrorAPIException, InvalidSizeAPIException, InvalidFormatAPIException
+from .exceptions import TokenErrorAPIException, InvalidSizeAPIException, InvalidFormatAPIException, \
+    AuthenticationFailedAPIException, AuthenticationFailedIsActiveAPIException
 from .models import User
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -90,11 +91,11 @@ class LoginSerializer(serializers.ModelSerializer):
         if user:
             user_in_db = get_user_model().objects.get(phone_number=phone_number)
 
+            if user_in_db.blocked:
+                raise AuthenticationFailedAPIException('Пользователь с таким номером телефона заблокирован!')
             if not user_in_db.is_active:
-                raise AuthenticationFailed('Аккаунт отключен, обратитесь к администратору')
+                raise AuthenticationFailedIsActiveAPIException('Аккаунт отключен, обратитесь к администратору')
 
-            if user_in_db.is_deleted:
-                raise AuthenticationFailed('Пользователь с таким номером телефона заблокирован!')
 
         if not user:
             raise AuthenticationFailed('Такого пользователя не существует!')

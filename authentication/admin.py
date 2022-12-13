@@ -16,7 +16,7 @@ class UserAdmin(admin.ModelAdmin):
         'last_name',
         'gender',
         'date_of_birth',
-        'is_deleted')
+        'blocked')
     list_filter = ['phone_number', 'email']
     ordering = ('email',)
     inlines = [PetInline]

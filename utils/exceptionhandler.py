@@ -70,10 +70,6 @@ def custom_exception_handler(exc, context):  # noqa
             return Responses.error_response(error_messages=messages.TEXT_AUTHENTICATION_FAILED,
                                             status_code=404)
 
-        if isinstance(exc, exceptions.EmailVerifyError):
-            return Responses.error_response(error_messages=messages.EMAIL_VERIFIED,
-                                            status_code=401)
-
         if isinstance(exc, exceptions.TokenErrorAPIException):
             return Responses.error_response(error_messages=messages.TEXT_UNAUTHORIZED,
                                             status_code=401)
@@ -91,28 +87,22 @@ def custom_exception_handler(exc, context):  # noqa
                 error_messages='Вы не сможете загружать файлы размерм больше 10MB',
                 status_code=400)
 
-        if isinstance(exc, exceptions.UserPhoneExistsAPIException):
-            return Responses.error_response_fields(
-                field='phone_number',
-                error_messages=messages.USER_PHONE_EXISTS,
-                status_code=400)
-
-        if isinstance(exc, exceptions.InvalidPhoneNumberFormatAPIException):
-            return Responses.error_response_fields(
-                field='phone_number',
-                error_messages=messages.INVALID_PHONE_NUMBER_FORMAT,
-                status_code=400)
-
         if isinstance(exc, exceptions.UserPhoneNotExistsAPIException):
             return Responses.error_response_fields(
                 field='phone_number',
                 error_messages=messages.USER_PHONE_NOT_EXISTS,
                 status_code=400)
 
-        if isinstance(exc, exceptions.PhoneVerifiedAPIException):
+        if isinstance(exc, exceptions.AuthenticationFailedAPIException):
             return Responses.error_response_fields(
                 field='phone_number',
-                error_messages=messages.PHONE_VERIFIED,
+                error_messages=messages.USER_BLOCKED,
+                status_code=400)
+
+        if isinstance(exc, exceptions.AuthenticationFailedIsActiveAPIException):
+            return Responses.error_response_fields(
+                field='phone_number',
+                error_messages=messages.ACCOUNT_DISABLED,
                 status_code=400)
 
         if isinstance(exc, MethodNotAllowed):

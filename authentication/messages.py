@@ -38,3 +38,6 @@ INVALID_PHONE_NUMBER_FORMAT = 'Вы неправильно ввели Номер
 TEXT_SUCCESSFUL_AVATAR_CHANGE = 'Вы успешно сменили изображение профиля'
 TEXT_AUTHENTICATION_FAILED = 'Пользователя с таким номера телефона не существует'
 TEXT_SUCCESSFUL_USER_DELETE = 'Аккаунт успешно удален!'
+
+USER_BLOCKED = 'Пользователь с таким номером телефона заблокирован!'
+ACCOUNT_DISABLED = 'Аккаунт отключен, обратитесь к администратору'

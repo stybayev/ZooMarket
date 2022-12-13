@@ -47,3 +47,10 @@ class UserPhoneNotExistsAPIException(APIException):
 
 class PhoneVerifiedAPIException(APIException):
     pass
+
+
+class AuthenticationFailedAPIException(APIException):
+    pass
+
+class AuthenticationFailedIsActiveAPIException(APIException):
+    pass
