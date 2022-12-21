@@ -100,6 +100,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                               verbose_name='E-mail')
     phone_number = PhoneNumberField(max_length=255, unique=True, )
     phone_verified = models.BooleanField(default=False)
+    phone_verification_code = models.CharField(max_length=255, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

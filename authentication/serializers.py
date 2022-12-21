@@ -185,3 +185,14 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             raise TokenErrorAPIException()
+
+
+class PhoneVerificationSerializer(serializers.ModelSerializer):
+    phone_verification_code = serializers.CharField(
+        required=True,
+        error_messages={"blank": "Введите 4-х значный Код подтверждения"})
+
+    class Meta:
+        model = get_user_model()
+        fields = ['phone_verification_code', ]
+
