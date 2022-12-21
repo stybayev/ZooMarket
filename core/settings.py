@@ -45,11 +45,6 @@ SWAGGER_SETTINGS = {
             'name': 'Authorization',
             'in': 'header'
         },
-        'apiKey': {
-            'type': 'apiKey',
-            'name': 'x-api-key',
-            'in': 'header'
-        },
     }
 }
 

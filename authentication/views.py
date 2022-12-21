@@ -38,6 +38,9 @@ class RegisterView(generics.GenericAPIView):
         return token
 
     def post(self, request):
+        """
+        Роут для регистрации пользователя
+        """
         user = request.data
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
@@ -49,6 +52,9 @@ class LoginAPIView(generics.GenericAPIView):
     serializer_class = serializers.LoginSerializer
 
     def post(self, request):
+        """
+        Роут для логина, после которого сразу генерируется токен
+        """
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -59,6 +65,9 @@ class PetCreateAPIView(generics.GenericAPIView):
     serializer_class = serializers.PetCreateSerializer
 
     def post(self, request):
+        """
+        Роут для создания питомцев покупателя
+        """
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -67,10 +76,46 @@ class PetCreateAPIView(generics.GenericAPIView):
         age = serializer.data.get('age')
         pet_type, created = PetType.objects.get_or_create(title=serializer.data.get('pet_type')['title'])
 
-        pet = Pet.objects.create(
+        Pet.objects.create(
             user=user,
             name=name,
             age=age,
             pet_type=pet_type)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserDetailView(generics.GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = serializers.UserDetailSerializer
+    http_method_names = ['get', ]
+
+    def get(self, request):
+        """
+        Роут для просмотра данных пользователя
+        """
+        try:
+            user = request.user
+            serializer = self.serializer_class(user,)
+
+            return Response(serializer.data, status.HTTP_200_OK)
+        except Exception as message:
+            error_type = type(message).__name__
+            return Response(
+                {'error': {'error_type': f'{error_type}',
+                           'message': f'{message}',
+                           'status_code': status.HTTP_400_BAD_REQUEST},
+                 },
+                status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutAPIView(generics.GenericAPIView):
+    serializer_class = serializers.LogoutSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(status.HTTP_204_NO_CONTENT)
+

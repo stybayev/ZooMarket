@@ -105,21 +105,26 @@ class LoginSerializer(serializers.ModelSerializer):
         error_messages={"blank": "Введите Номер телефона."})
     tokens = serializers.SerializerMethodField()
 
+    phone_verified = serializers.SerializerMethodField()
+
+    def get_phone_verified(self, obj):
+        return self.user.phone_verified
+
     def get_tokens(self, obj):
-        user = get_user_model().objects.get(phone_number=obj['phone_number'])
+        self.user = get_user_model().objects.get(phone_number=obj['phone_number'])
 
         return {
-            'access': user.tokens.get('access'),
-            'refresh': user.tokens.get('refresh'),
+            'access': self.user.tokens.get('access'),
+            'refresh': self.user.tokens.get('refresh'),
         }
 
     class Meta:
         model = get_user_model()
-        fields = ['phone_number', 'tokens', ]
+        fields = ['phone_number', 'tokens', 'phone_verified']
 
     def validate(self, attrs):  # noqa
         phone_number = attrs.get('phone_number', None)
-        authenticate(phone_number=phone_number, )
+        self.user = authenticate(phone_number=phone_number, )
 
         user = get_user_model().objects.filter(phone_number=phone_number).exists()
         if user:
@@ -144,7 +149,39 @@ class PetTypeSerializer(serializers.ModelSerializer):
 
 class PetCreateSerializer(serializers.ModelSerializer):
     pet_type = PetTypeSerializer()
+
     class Meta:
         model = Pet
         fields = ['name', 'age', 'pet_type']
-        read_only_fields = ['user',]
+        read_only_fields = ['user', ]
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'email',
+                  'is_superuser', 'is_active', 'is_staff',
+                  'phone_number', 'phone_verified', 'first_name', 'last_name',
+                  'gender', 'date_of_birth', 'add_pet_status',
+                  'reason_for_blocking', 'loyalty_level',)
+
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(
+        error_messages={"blank": "Введите refresh токен"}
+    )
+
+    default_error_messages = {
+        "bad_token": ("Ваша сессия авторизации устарела. "
+                      "Необходимо Войти в личный кабинет")
+    }
+
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError:
+            raise TokenErrorAPIException()

@@ -11,6 +11,7 @@ class PetInline(admin.StackedInline):
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'email',
+        'phone_verified',
         'phone_number',
         'first_name',
         'last_name',
