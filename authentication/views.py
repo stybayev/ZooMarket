@@ -58,7 +58,7 @@ class LoginAPIView(generics.GenericAPIView):
         Роут для логина, после которого сразу генерируется токен
         """
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception=True)  # TODO Убрать проверку, если нет пользоваеля (Вопрос Вове!!!)
 
         phone_number = serializer.data.get('phone_number', None)
         user = get_user_model().objects.get(phone_number=phone_number)
