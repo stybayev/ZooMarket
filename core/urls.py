@@ -45,7 +45,7 @@ if settings.DEBUG:
         path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
         path('api/api.json/', schema_view.without_ui(cache_timeout=0), name='schema-swagger-ui'),
         path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-        # path('api-auth/', include('rest_framework.urls'))
+        path('api-auth/', include('rest_framework.urls'))
     ]
 
     urlpatterns += urlpatterns_swagger

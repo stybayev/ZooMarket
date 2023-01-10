@@ -124,10 +124,13 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
     'NON_FIELD_ERROR_KEY': 'error',
     'EXCEPTION_HANDLER': 'utils.exceptionhandler.custom_exception_handler',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-
-    )
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    #
+    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+            'auth.backends.FirebaseBackend',
+        ]
 }
 
 SIMPLE_JWT = {

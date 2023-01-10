@@ -86,6 +86,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     GENDER_CHOICES = [('male', 'Мужской'),
                       ('female', 'Женский'), ]
 
+    username = models.CharField(max_length=255, db_index=True, blank=True, null=True)
+
     first_name = models.CharField(max_length=255, verbose_name='Имя')
 
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
@@ -169,3 +171,9 @@ class PetType(models.Model):
     class Meta:
         verbose_name = "Вид питомца"
         verbose_name_plural = "03 Вид питомца"
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    bio = models.CharField(max_length=200)
+    dob = models.DateField()

@@ -3,12 +3,12 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from phonenumber_field.serializerfields import PhoneNumberField
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from .exceptions import TokenErrorAPIException, InvalidSizeAPIException, InvalidFormatAPIException, \
     AuthenticationFailedAPIException, AuthenticationFailedIsActiveAPIException
-from .models import User, Pet, PetType
+from .models import User, Pet, PetType, UserProfile
 from rest_framework.exceptions import AuthenticationFailed
 
 
@@ -196,3 +196,39 @@ class PhoneVerificationSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['phone_verification_code', ]
 
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'dob']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    userprofile = UserProfileSerializer()
+
+    def update(self, instance, validated_data):
+        if (not instance.username == self.context['request'].user.username):
+            raise exceptions.PermissionDenied('У вас нет разрешения на обновление')
+        profile_data = validated_data.pop('userprofile')
+        if (not hasattr(instance, 'userprofile')):
+            instance.userprofile = UserProfile.objects.create(user=instance, **profile_data)
+        else:
+            instance.userprofile.dob = profile_data["dob"]
+            instance.userprofile.bio = profile_data["bio"]
+            instance.userprofile.save()
+
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance
+
+
+class Meta:
+    model = User
+    fields = ['last_name', 'first_name', 'userprofile']
+
+
+class Meta:
+    model = User
+    fields = ['last_name', 'first_name', 'userprofile']
