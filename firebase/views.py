@@ -2,7 +2,12 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 
-from firebase.auth_fiebase import firebase_validation
+from firebase.services import firebase_validation
+
+'''
+Представление на основе классов для регистрации и входа в систему
+с помощью идентификатора токена.
+'''
 
 
 class SocialSignupAPIView(GenericAPIView):
@@ -16,23 +21,17 @@ class SocialSignupAPIView(GenericAPIView):
         if auth_header:
             id_token = auth_header.split(" ").pop()
             validate = firebase_validation(id_token)
-            # print(id_token)
-            # print(validate)
-            # return Response({"data": "ok"})
 
             if validate:
                 user = get_user_model().objects.filter(uid=validate["uid"]).first()
-
                 if user:
                     data = {
                         "id": user.id,
                         "email": user.email,
-                        "name": user.name,
-                        "image": user.image,
+                        "name": user.first_name,
                         "type": "existing_user",
                         "provider": validate['provider']
                     }
-
                     return Response({"data": data, "message": "Login Successful"})
 
                 else:
@@ -51,10 +50,10 @@ class SocialSignupAPIView(GenericAPIView):
                     #     "provider": validate['provider']
                     # }
 
-                    return Response({"data": "ok",
-                                     "message": "Необходимо зарегаться"})
+                    return Response({"message": "Такого пользователя не существует"})
+
+            else:
+                return Response({"message": "Недействительный токен"})
 
         else:
-            return Response({"message": "invalid token"})
-            # else:
-            #     return Response({"message": "token not provided"})
+            return Response({"message": "Токен не предоставлен"})

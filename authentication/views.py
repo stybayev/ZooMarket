@@ -1,5 +1,4 @@
 from random import randint
-from .serializers import UserSerializer
 from rest_framework import viewsets
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
@@ -178,7 +177,3 @@ class LogoutAPIView(generics.GenericAPIView):
 
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-    lookup_field = 'username'

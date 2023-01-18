@@ -3,8 +3,11 @@ import firebase_admin
 from firebase_admin import credentials
 
 from firebase_admin import auth
-from firebase_admin.auth import UserNotFoundError, ExpiredIdTokenError
+from firebase_admin.auth import UserNotFoundError, ExpiredIdTokenError, InvalidIdTokenError
 
+'''
+Создание сертификата учетных данных
+'''
 cred = credentials.Certificate({
     "type": "service_account",
     "project_id": "zoomarket-abb51",
@@ -18,40 +21,48 @@ cred = credentials.Certificate({
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-bllgh%40zoomarket-abb51.iam.gserviceaccount.com"
 })
 
+'''
+Подключение к приложению FireBase
+'''
+
 default_app = firebase_admin.initialize_app(cred)
+
+'''
+Функция для проверки id токена и получения от него сведений о пользователе
+'''
 
 
 def firebase_validation(id_token):
-  """
-  Эта функция получает токен идентификатора, отправленный Firebase,
-  и проверяет токен идентификатора, а затем проверяет, существует ли пользователь в
-  Firebase или нет, если он существует, он возвращает True, иначе False
-  """
-  try:
-    decoded_token = auth.verify_id_token(id_token)
-    uid = decoded_token['uid']
-    provider = decoded_token['firebase']['sign_in_provider']
-    image = None
-    name = None
-    if "name" in decoded_token:
-      name = decoded_token['name']
-    if "picture" in decoded_token:
-      image = decoded_token['picture']
+    '''
+    Эта функция получает идентификатор токен, отправленный Firebase,
+    и проверяет токен идентификатора, а затем проверяет, существует ли пользователь в
+    Firebase или нет, если он существует, он возвращает True, иначе False
+    '''
     try:
-      user = auth.get_user(uid)
-      email = user.email
-      if user:
-        return {
-          "status": True,
-          "uid": uid,
-          "email": email,
-          "name": name,
-          "provider": provider,
-          "image": image
-        }
-      else:
-        return False
-    except UserNotFoundError:
-      print("user not exist")
-  except ExpiredIdTokenError:
-    print("invalid token")
+        decoded_token = auth.verify_id_token(id_token)
+        uid = decoded_token['uid']
+        provider = decoded_token['firebase']['sign_in_provider']
+        image = None
+        name = None
+        if "name" in decoded_token:
+            name = decoded_token['name']
+        if "picture" in decoded_token:
+            image = decoded_token['picture']
+        try:
+            user = auth.get_user(uid)
+            email = user.email
+            if user:
+                return {
+                    "status": True,
+                    "uid": uid,
+                    "email": email,
+                    "name": name,
+                    "provider": provider,
+                    "image": image
+                }
+            else:
+                return False
+        except UserNotFoundError:
+            print("user not exist")
+    except (ExpiredIdTokenError, InvalidIdTokenError):
+        print("invalid token")
