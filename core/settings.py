@@ -16,7 +16,6 @@ DEBUG = os.getenv('DEBUG', False) == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 AUTH_USER_MODEL = 'authentication.User'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -124,13 +123,12 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
     'NON_FIELD_ERROR_KEY': 'error',
     'EXCEPTION_HANDLER': 'utils.exceptionhandler.custom_exception_handler',
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    #
-    # ),
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-            'auth.backends.FirebaseBackend',
-        ]
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'authentication.back_authentication.FirebaseBackend',
+        # "firebase.authentication.FirebaseAuthentication",
+    ),
+
 }
 
 SIMPLE_JWT = {

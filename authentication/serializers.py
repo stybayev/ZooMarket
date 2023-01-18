@@ -224,9 +224,9 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
-class Meta:
-    model = User
-    fields = ['last_name', 'first_name', 'userprofile']
+    class Meta:
+        model = User
+        fields = ['last_name', 'first_name', 'userprofile']
 
 
 class Meta:

@@ -3,6 +3,12 @@ from authentication.views import (
     PetCreateAPIView, UserDetailView, LogoutAPIView, VerifyPhoneView,
 )
 from django.urls import path
+from django.urls import path, include
+from .views import UserViewSet
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('register/',
@@ -28,5 +34,7 @@ urlpatterns = [
     path('phone_verify/',
          VerifyPhoneView.as_view(),
          name='phone_verify'),
+
+    path('login_firebase/', include(router.urls)),
 
 ]
