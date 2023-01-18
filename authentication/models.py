@@ -114,6 +114,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
+    uid = models.CharField(max_length=500, null=True, blank=True)
+
     def __str__(self):
         return self.email
 

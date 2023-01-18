@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'phonenumber_field',
+    'firebase',
 
     'authentication',
 ]
