@@ -46,10 +46,13 @@ class CheckUserStatusAPIView(GenericAPIView):
                     })
 
                 else:
-                    user = get_user_model()(email=validate['email'],
-                                            name=validate['name'],
+                    print(validate)
+                    user = get_user_model()(email=f"{validate['uid']}@gmail.com",
+                                            password=validate['uid'],
+                                            phone_number='+77777777771',
+                                            gender='male',
                                             uid=validate['uid'],
-                                            image=validate['image'])
+                                            )
                     user.save()
 
                     # data = {
