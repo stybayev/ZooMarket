@@ -163,7 +163,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
                   'is_superuser', 'is_active', 'is_staff',
                   'phone_number', 'phone_verified', 'first_name', 'last_name',
                   'gender', 'date_of_birth', 'add_pet_status',
-                  'reason_for_blocking', 'loyalty_level',)
+                  'reason_for_blocking', 'loyalty_level', 'is_fill')
 
 
 class LogoutSerializer(serializers.Serializer):
