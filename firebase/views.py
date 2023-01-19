@@ -30,7 +30,8 @@ class CheckUserStatusAPIView(GenericAPIView):
                         "email": user.email,
                         "name": user.first_name,
                         "type": "existing_user",
-                        "provider": validate['provider']
+                        "provider": validate['provider'],
+                        "is_fill": user.is_fill
                     }
 
                     tokens = {

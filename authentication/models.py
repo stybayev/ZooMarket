@@ -112,9 +112,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     loyalty_level = models.PositiveIntegerField(verbose_name='Уровень лояльности', null=True, blank=True)
 
+    uid = models.CharField(max_length=500, null=True, blank=True)
+
+    is_fill = models.BooleanField(blank=True, null=True, default=False)
+
     USERNAME_FIELD = 'email'
 
-    uid = models.CharField(max_length=500, null=True, blank=True)
+
 
     def __str__(self):
         return self.email
