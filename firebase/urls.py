@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import SocialSignupAPIView
+from .views import CheckUserStatusAPIView
 
 urlpatterns = [
-    path('socialSignup', SocialSignupAPIView.as_view(), name='social_signup'),
+    path('CheckUserStatus', CheckUserStatusAPIView.as_view(), name='check_user_status'),
 ]

@@ -127,7 +127,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 'authentication.back_authentication.FirebaseBackend',
-        # "firebase.authentication.FirebaseAuthentication",
     ),
 
 }

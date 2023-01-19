@@ -10,7 +10,7 @@ from firebase.services import firebase_validation
 '''
 
 
-class SocialSignupAPIView(GenericAPIView):
+class CheckUserStatusAPIView(GenericAPIView):
     """
     API для создания пользователя из социальных сетей
     """
@@ -21,7 +21,7 @@ class SocialSignupAPIView(GenericAPIView):
         if auth_header:
             id_token = auth_header.split(" ").pop()
             validate = firebase_validation(id_token)
-
+            print(validate["uid"])
             if validate:
                 user = get_user_model().objects.filter(uid=validate["uid"]).first()
                 if user:
@@ -32,15 +32,25 @@ class SocialSignupAPIView(GenericAPIView):
                         "type": "existing_user",
                         "provider": validate['provider']
                     }
-                    return Response({"data": data, "message": "Login Successful"})
+
+                    tokens = {
+                        'access': user.tokens.get('access'),
+                        'refresh': user.tokens.get('refresh'),
+                    }
+
+                    return Response({
+                        "data": data,
+                        "tokens": tokens,
+                        "status": True
+                    })
 
                 else:
-                    # user = get_user_model()(email=validate['email'],
-                    #                         name=validate['name'],
-                    #                         uid=validate['uid'],
-                    #                         image=validate['image'])
-                    # user.save()
-                    #
+                    user = get_user_model()(email=validate['email'],
+                                            name=validate['name'],
+                                            uid=validate['uid'],
+                                            image=validate['image'])
+                    user.save()
+
                     # data = {
                     #     "id": user.id,
                     #     "email": obj.email,
@@ -50,7 +60,7 @@ class SocialSignupAPIView(GenericAPIView):
                     #     "provider": validate['provider']
                     # }
 
-                    return Response({"message": "Такого пользователя не существует"})
+                    return Response({"status": False})
 
             else:
                 return Response({"message": "Недействительный токен"})
