@@ -114,7 +114,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     uid = models.CharField(max_length=500, null=True, blank=True)
 
-    is_fill = models.BooleanField(blank=True, null=True, default=False)
+    is_fill = models.BooleanField(blank=True, null=True, default=False, verbose_name='Поля заполнены')
 
     USERNAME_FIELD = 'email'
 

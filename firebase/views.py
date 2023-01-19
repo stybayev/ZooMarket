@@ -21,7 +21,7 @@ class CheckUserStatusAPIView(GenericAPIView):
         if auth_header:
             id_token = auth_header.split(" ").pop()
             validate = firebase_validation(id_token)
-            print(validate["uid"])
+
             if validate:
                 user = get_user_model().objects.filter(uid=validate["uid"]).first()
                 if user:
