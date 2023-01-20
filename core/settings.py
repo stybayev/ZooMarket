@@ -69,8 +69,7 @@ CSRF_COOKIE_SECURE = False
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "https://backend.investlink.io",
-    "https://investlink.io",
+    'https://zoo-market.ddns',
     "http://0.0.0.0:8080",
     "http://127.0.0.1:8000",
 ]
