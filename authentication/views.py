@@ -57,9 +57,17 @@ class RegisterView(generics.GenericAPIView):
         user.last_name = request.data.get('last_name', None)
         user.gender = request.data.get('gender', None)
         user.date_of_birth = request.data.get('date_of_birth', None)
+        user.is_fill = True
         user.save()
 
-        return Response({'success': True}, status=status.HTTP_201_CREATED)
+        tokens = {
+            'access': user.tokens.get('access'),
+            'refresh': user.tokens.get('refresh'),
+        }
+
+        return Response({'success': True,
+                         'tokend': tokens,
+                         'is_fill': user.is_fill}, status=status.HTTP_201_CREATED)
 
 
 class LoginAPIView(generics.GenericAPIView):
