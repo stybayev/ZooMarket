@@ -29,7 +29,7 @@ class CheckUserStatusAPIView(GenericAPIView):
                         "id": user.id,
                         "email": user.email,
                         "name": user.first_name,
-                        "type": "existing_user",
+                        "type": "Существующий пользователь",
                         "provider": validate['provider'],
                         "is_fill": user.is_fill
                     }
@@ -64,7 +64,7 @@ class CheckUserStatusAPIView(GenericAPIView):
                                      "status": False})
 
             else:
-                return Response({"message": "Недействительный токен"})
+                return Response({"message": "Недействительный токен"}, status=400)
 
         else:
-            return Response({"message": "Токен не предоставлен"})
+            return Response({"message": "Токен не предоставлен"}, status=400)

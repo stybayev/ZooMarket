@@ -1,4 +1,6 @@
 from random import randint
+
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
@@ -39,15 +41,25 @@ class RegisterView(generics.GenericAPIView):
         token = tokens.get('access', None)
         return token
 
-    def post(self, request):
+    def patch(self, request, **kwargs):
         """
         Роут для регистрации пользователя
         """
-        user = request.data
-        serializer = self.serializer_class(data=user)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        user_id = self.kwargs['user_id']
+        user = get_object_or_404(get_user_model(), pk=user_id)
+        user.email = request.data.get('email', None)
+        user.password = request.data.get('password', None)
+        user.phone_number = request.data.get('phone_number', None)
+        user.first_name = request.data.get('first_name', None)
+        user.last_name = request.data.get('last_name', None)
+        user.gender = request.data.get('gender', None)
+        user.date_of_birth = request.data.get('date_of_birth', None)
+        user.save()
+
+        return Response({'success': True}, status=status.HTTP_201_CREATED)
 
 
 class LoginAPIView(generics.GenericAPIView):
@@ -174,6 +186,3 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.save()
 
         return Response(status.HTTP_204_NO_CONTENT)
-
-
-

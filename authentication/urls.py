@@ -6,7 +6,7 @@ from authentication.views import (
 from django.urls import path
 
 urlpatterns = [
-    path('register/',
+    path('register/<int:user_id>/',
          RegisterView.as_view(),
          name='user_registration'),
 
