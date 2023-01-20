@@ -47,24 +47,21 @@ class CheckUserStatusAPIView(GenericAPIView):
 
                 else:
                     print(validate)
-                    user = get_user_model()(email=f"{validate['uid']}@gmail.com",
-                                            password=validate['uid'],
-                                            phone_number='+77777777771',
-                                            gender='male',
-                                            uid=validate['uid'],
-                                            )
+                    user = get_user_model()(
+                        # password=validate['uid'],
+                        uid=validate['uid'],
+                    )
                     user.save()
 
-                    # data = {
-                    #     "id": user.id,
-                    #     "email": obj.email,
-                    #     "name": obj.name,
-                    #     "image": obj.image,
-                    #     "type": "new_user",
-                    #     "provider": validate['provider']
-                    # }
+                    data = {
+                        "id": user.id,
+                        "type": "Пустой пользователь",
+                        "provider": validate['provider'],
+                        "uid": user.uid
+                    }
 
-                    return Response({"status": False})
+                    return Response({"data": data,
+                                     "status": False})
 
             else:
                 return Response({"message": "Недействительный токен"})
