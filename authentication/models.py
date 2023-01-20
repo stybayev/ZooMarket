@@ -92,15 +92,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     last_name = models.CharField(max_length=255, verbose_name='Фамилия')
 
-    gender = models.CharField(choices=GENDER_CHOICES, max_length=100, verbose_name='Пол', )
+    gender = models.CharField(choices=GENDER_CHOICES, max_length=100, verbose_name='Пол',
+                              null=True, blank=True)
 
     date_of_birth = models.DateField(null=True, blank=True, verbose_name='Дата рождения')
 
     add_pet_status = models.BooleanField(default=False, verbose_name='Статус добавления питомца', null=True, blank=True)
 
     email = models.EmailField(max_length=255, unique=True, db_index=True,
-                              verbose_name='E-mail')
-    phone_number = PhoneNumberField(max_length=255, unique=True, )
+                              verbose_name='E-mail',
+                              null=True, blank=True)
+
+    phone_number = PhoneNumberField(max_length=255, unique=True, null=True, blank=True)
+
     phone_verified = models.BooleanField(default=False)
     phone_verification_code = models.CharField(max_length=255, null=True, blank=True)
 

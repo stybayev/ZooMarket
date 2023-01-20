@@ -24,6 +24,11 @@ class UserAdmin(admin.ModelAdmin):
     save_as = True
     save_on_top = True
 
+    def get_deleted_objects(self, objs, request):
+        deleted_objects, model_count, perms_needed, protected = \
+            super().get_deleted_objects(objs, request)
+        return deleted_objects, model_count, set(), protected
+
 
 @admin.register(models.Pet)
 class PetAdmin(admin.ModelAdmin):
