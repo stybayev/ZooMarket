@@ -25,6 +25,11 @@ class CheckUserStatusAPIView(GenericAPIView):
             if validate:
                 user = get_user_model().objects.filter(uid=validate["uid"]).first()
                 if user:
+                    if user.blocked:
+                        return Response({
+                            "status": "Blocked",
+                            "message": f"{user.reason_for_blocking}"
+                        })
                     data = {
                         "id": user.id,
                         "email": user.email,
@@ -46,7 +51,6 @@ class CheckUserStatusAPIView(GenericAPIView):
                     })
 
                 else:
-                    print(validate)
                     user = get_user_model()(
                         uid=validate['uid'],
                     )

@@ -110,15 +110,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    blocked = models.BooleanField(default=False, verbose_name='Заблокирован')
-
-    reason_for_blocking = models.TextField(verbose_name='Причина блокировки', null=True, blank=True)
 
     loyalty_level = models.PositiveIntegerField(verbose_name='Уровень лояльности', null=True, blank=True)
 
     uid = models.CharField(max_length=500, null=True, blank=True)
 
     is_fill = models.BooleanField(blank=True, null=True, default=False, verbose_name='Поля заполнены')
+
+    blocked = models.BooleanField(default=False, verbose_name='Заблокирован')
+
+    reason_for_blocking = models.TextField(verbose_name='Причина блокировки', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
 
@@ -151,10 +152,9 @@ class Pet(models.Model):
     age = models.PositiveIntegerField(verbose_name='Возраст', )
 
     pet_type = models.ForeignKey('authentication.PetType',
-                                 on_delete=models.SET_DEFAULT,
+                                 on_delete=models.PROTECT,
                                  verbose_name='Вид питомца',
-                                 related_name='pet', default='',
-                                 blank=True, null=True)
+                                 related_name='pet')
 
     user = models.ForeignKey(get_user_model(),
                              null=True, blank=True,
