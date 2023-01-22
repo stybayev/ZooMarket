@@ -48,7 +48,6 @@ class CheckUserStatusAPIView(GenericAPIView):
                 else:
                     print(validate)
                     user = get_user_model()(
-                        # password=validate['uid'],
                         uid=validate['uid'],
                     )
                     user.save()

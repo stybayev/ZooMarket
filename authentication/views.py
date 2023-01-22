@@ -51,7 +51,6 @@ class RegisterView(generics.GenericAPIView):
         user_id = self.kwargs['user_id']
         user = get_object_or_404(get_user_model(), pk=user_id)
         user.email = request.data.get('email', None)
-        user.password = request.data.get('password', None)
         user.phone_number = request.data.get('phone_number', None)
         user.first_name = request.data.get('first_name', None)
         user.last_name = request.data.get('last_name', None)

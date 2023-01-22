@@ -1,13 +1,10 @@
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
-from phonenumber_field.serializerfields import PhoneNumberField
-from rest_framework import serializers, exceptions
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
-from .exceptions import TokenErrorAPIException, InvalidSizeAPIException, InvalidFormatAPIException, \
-    AuthenticationFailedAPIException, AuthenticationFailedIsActiveAPIException
+from .exceptions import (TokenErrorAPIException,
+                         AuthenticationFailedAPIException,
+                         AuthenticationFailedIsActiveAPIException)
 from .models import User, Pet, PetType, UserProfile
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -54,19 +51,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
                                     message='Данный email уже зарегистрирован в нашей системе')],
         error_messages={"blank": "Введите E-mail адрес"})
 
-    password = serializers.CharField(
-        max_length=128,
-        min_length=6,
-        write_only=True,
-        error_messages={"blank": "Введите пароль"}
-    )
-
     tokens = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
         fields = (
-            'email', 'password', 'tokens', 'phone_number',
+            'email', 'tokens', 'phone_number',
             'first_name', 'last_name',
             'gender', 'date_of_birth',
         )
@@ -74,30 +64,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         return super().validate(data)
 
-    """
-    Создание объекта. Данные в конструктор передаются уже проверенными
-    """
-
-    # def create(self, validated_data):
-    #     self.user = get_user_model().objects.create_user(**validated_data)
-    #     self.user.username = validated_data.get('email', None)
-    #     self.user.is_fill = True
-    #     self.user.save()
-    #     return self.user
-
-    """
-    Генерация токенов для пользователя.
-    """
-
     def get_tokens(self, obj):
-        user = get_user_model().objects.get(email=self.user.email)
+        self.user = get_user_model().objects.get(phone_number=obj['phone_number'])
 
-        tokens = {
-            'access': user.tokens.get('access'),
-            'refresh': user.tokens.get('refresh'),
+        return {
+            'access': self.user.tokens.get('access'),
+            'refresh': self.user.tokens.get('refresh'),
         }
-
-        return tokens
 
 
 class LoginSerializer(serializers.ModelSerializer):
@@ -196,16 +169,6 @@ class PhoneVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['phone_verification_code', ]
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = ['bio', 'dob']
-
-    class Meta:
-        model = User
-        fields = ['last_name', 'first_name', 'userprofile']
 
 
 class Meta:
