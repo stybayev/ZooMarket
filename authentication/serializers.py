@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from .exceptions import (TokenErrorAPIException,
                          AuthenticationFailedAPIException,
                          AuthenticationFailedIsActiveAPIException)
-from .models import User, Pet, PetType, UserProfile
+# from .models import User, Pet, PetType, UserProfile
 from rest_framework.exceptions import AuthenticationFailed
 
 
@@ -115,21 +115,6 @@ class LoginSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
 
-class PetTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PetType
-        fields = ['title']
-
-
-class PetCreateSerializer(serializers.ModelSerializer):
-    pet_type = PetTypeSerializer()
-
-    class Meta:
-        model = Pet
-        fields = ['name', 'age', 'pet_type']
-        read_only_fields = ['user', ]
-
-
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
@@ -170,8 +155,3 @@ class PhoneVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['phone_verification_code', ]
-
-
-class Meta:
-    model = User
-    fields = ['last_name', 'first_name', 'userprofile']

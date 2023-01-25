@@ -1,9 +1,11 @@
 from django.contrib import admin
+
+from pet.models import Pet
 from . import models
 
 
 class PetInline(admin.StackedInline):
-    model = models.Pet
+    model = Pet
     extra = 1
 
 
@@ -27,21 +29,3 @@ class UserAdmin(admin.ModelAdmin):
         deleted_objects, model_count, perms_needed, protected = \
             super().get_deleted_objects(objs, request)
         return deleted_objects, model_count, set(), protected
-
-
-@admin.register(models.Pet)
-class PetAdmin(admin.ModelAdmin):
-    list_display = (
-        'name',
-        'age',
-        'pet_type',)
-    list_filter = ['pet_type', 'age']
-    ordering = ('name',)
-
-
-@admin.register(models.PetType)
-class PetTypeAdmin(admin.ModelAdmin):
-    list_display = (
-        'title',)
-    list_filter = ['title']
-    ordering = ('title',)
