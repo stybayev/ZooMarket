@@ -23,3 +23,12 @@ class PetListSerializer(serializers.ModelSerializer):
         model = Pet
         fields = ['name', 'age', 'pet_type']
         read_only_fields = ['user', ]
+
+
+class PetUpdateSerializer(serializers.ModelSerializer):
+    pet_type = serializers.CharField()
+
+    class Meta:
+        model = Pet
+        fields = ['name', 'age', 'pet_type']
+        read_only_fields = ['user', ]

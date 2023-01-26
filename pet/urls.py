@@ -10,5 +10,9 @@ urlpatterns = [
          PetCreateAPIView.as_view(),
          name='pet_create'),
 
-    path('', include(router.urls))
+    path('', include(router.urls)),
+
+    path('pet_update/<int:pet_id>/',
+         PetUpdateView.as_view(),
+         name='pet_update'),
 ]
