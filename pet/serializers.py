@@ -9,6 +9,14 @@ class PetTypeSerializer(serializers.ModelSerializer):
 
 
 class PetCreateSerializer(serializers.ModelSerializer):
+    pet_type = serializers.CharField()
+
+    class Meta:
+        model = Pet
+        fields = ['name', 'age', 'pet_type']
+        read_only_fields = ['user', ]
+
+class PetListSerializer(serializers.ModelSerializer):
     pet_type = PetTypeSerializer()
 
     class Meta:
