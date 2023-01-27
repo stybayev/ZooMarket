@@ -55,7 +55,7 @@ class PetListViewSet(ModelViewSet):
     '''
     Представление для получения списка питомцев текущего пользователя
     '''
-    http_method_names = ['get', ]
+    http_method_names = ['get', 'delete']
     queryset = Pet.objects.all()
     serializer_class = serializers.PetListSerializer
 

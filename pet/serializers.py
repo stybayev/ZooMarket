@@ -16,12 +16,13 @@ class PetCreateSerializer(serializers.ModelSerializer):
         fields = ['name', 'age', 'pet_type']
         read_only_fields = ['user', ]
 
+
 class PetListSerializer(serializers.ModelSerializer):
     pet_type = PetTypeSerializer()
 
     class Meta:
         model = Pet
-        fields = ['name', 'age', 'pet_type']
+        fields = ['id', 'name', 'age', 'pet_type']
         read_only_fields = ['user', ]
 
 
