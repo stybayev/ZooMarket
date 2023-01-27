@@ -29,7 +29,7 @@ class PetCreateAPIView(generics.GenericAPIView):
         age = serializer.data.get('age')
 
         pet_type = PetType.objects.filter(title=serializer.data.get('pet_type')).exists()
-        print(pet_type)
+
         try:
             if not pet_type:
                 raise ValueError('Указанного типа питомца не существует')
@@ -71,21 +71,28 @@ class PetListViewSet(ModelViewSet):
 
 
 class PetUpdateView(generics.UpdateAPIView):
+    """
+    Роут для изменения данных пользователя из личного кабинета.
+    Принимаются новые данные и сохраняются в модели пользователя.
+    """
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = serializers.PetUpdateSerializer
     http_method_names = ["patch", ]
 
     def patch(self, request, *args, **kwargs):
-        self.serializer_class(data=request.data)
-        user = request.user
-        pets_user = Pet.objects.filter(user=user)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         pet = get_object_or_404(Pet, pk=self.kwargs['pet_id'])
-        if not pet in Pet.objects.filter(user=user):
+        if not pet in Pet.objects.filter(user=request.user):
+            raise Http404()
+        pet_type = PetType.objects.filter(title=serializer.data.get('pet_type')).exists()
+        if not pet_type:
             raise Http404()
 
-        pet.name = request.data.get('name')
-        pet.age = request.data.get('age')
-        pet.pet_type = request.data.get('pet_type')
+        pet.name = serializer.data.get('name')
+        pet.age = serializer.data.get('age')
+        pet.pet_type = PetType.objects.get(title=serializer.data.get('pet_type'))
         pet.save()
 
         return Response(
