@@ -282,4 +282,4 @@ cython_debug/
 __pycache__
 .idea
 .vscode
-tokens.txt
+*tokens.txt
