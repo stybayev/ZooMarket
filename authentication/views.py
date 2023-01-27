@@ -149,3 +149,35 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.save()
 
         return Response(status.HTTP_204_NO_CONTENT)
+
+
+"""
+Представление для изменения данных пользователя 
+"""
+
+
+class UpdateProfileView(generics.UpdateAPIView):
+    """
+    Роут для изменения данных пользователя
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = serializers.UpdateProfileSerializer
+    http_method_names = ["patch", ]
+
+    def patch(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+
+        user.email = serializer.data.get('email')
+        user.phone_number = serializer.data.get('phone_number')
+        user.first_name = serializer.data.get('first_name')
+        user.last_name = serializer.data.get('last_name')
+        user.gender = serializer.data.get('gender')
+        user.date_of_birth = serializer.data.get('date_of_birth')
+        user.save()
+
+        return Response(
+            {'success': True, 'message': f'{messages.UPDATE_SUCCESS}'},
+            status=status.HTTP_200_OK)

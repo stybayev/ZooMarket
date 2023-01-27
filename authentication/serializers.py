@@ -155,3 +155,20 @@ class PhoneVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['phone_verification_code', ]
+
+
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(max_length=255, min_length=3)
+    last_name = serializers.CharField(max_length=255, min_length=3)
+    gender = serializers.ChoiceField(choices=get_user_model().GENDER_CHOICES)
+    date_of_birth = serializers.DateField()
+    email = serializers.EmailField(max_length=255, min_length=3)
+
+    class Meta:
+        model = get_user_model()
+        fields = ('email',
+                  'phone_number',
+                  'first_name', 'last_name',
+                  'gender', 'date_of_birth',
+                  )

@@ -65,15 +65,13 @@ class PetListViewSet(ModelViewSet):
 
 
 """
-Вьюха для изменения данных пользователя из личного кабинета.
-Принимаются новые данные и сохраняются в модели пользователя.
+ля изменения данных питомцев пользователя.
 """
 
 
 class PetUpdateView(generics.UpdateAPIView):
     """
-    Роут для изменения данных пользователя из личного кабинета.
-    Принимаются новые данные и сохраняются в модели пользователя.
+    Роут для изменения данных питомцев пользователя.
     """
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = serializers.PetUpdateSerializer

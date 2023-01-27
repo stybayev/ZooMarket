@@ -1,6 +1,6 @@
 from authentication.views import (
     RegisterView, LoginAPIView,
-    UserDetailView, LogoutAPIView, VerifyPhoneView,
+    UserDetailView, LogoutAPIView, UpdateProfileView,
 )
 
 from django.urls import path
@@ -22,7 +22,7 @@ urlpatterns = [
          LogoutAPIView.as_view(),
          name='logout'),
 
-    path('phone_verify/',
-         VerifyPhoneView.as_view(),
-         name='phone_verify'),
+    path('user_update/',
+         UpdateProfileView.as_view(),
+         name='user_update'),
 ]
