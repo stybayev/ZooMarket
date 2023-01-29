@@ -40,6 +40,7 @@ urlpatterns = [
                   path('auth/', include('authentication.urls')),
                   path('firebase/', include('firebase.urls')),
                   path('pet/', include('pet.urls')),
+                  path('purchase_history/', include('purchase_history.urls')),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

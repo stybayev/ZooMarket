@@ -51,10 +51,10 @@ class PetCreateAPIView(generics.GenericAPIView):
 
 
 class PetListViewSet(ModelViewSet):
+    '''
+    Роут для пимтомцев
+    '''
     permission_classes = [permissions.IsAuthenticated]
-    '''
-    Представление для получения списка питомцев текущего пользователя
-    '''
     http_method_names = ['get', 'delete']
     queryset = Pet.objects.all()
     serializer_class = serializers.PetListSerializer

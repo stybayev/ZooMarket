@@ -37,6 +37,8 @@ INSTALLED_APPS = [
 
     'authentication',
     'pet',
+    'purchase_history',
+
 ]
 
 SWAGGER_SETTINGS = {
