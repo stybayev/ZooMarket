@@ -1,3 +1,4 @@
+import os
 from random import randint
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
@@ -181,3 +182,32 @@ class UpdateProfileView(generics.UpdateAPIView):
         return Response(
             {'success': True, 'message': f'{messages.UPDATE_SUCCESS}'},
             status=status.HTTP_200_OK)
+
+
+class DeleteUserView(generics.GenericAPIView):
+    '''
+    Представление для удаления пользователя.
+    На самом деле, мы не удаляем аккаунты.
+    Мы просто затираем всю персональную информацию о пользователе.
+    Все заполненные поля, перезаписываем стандартными данными
+    для удаленных аккаунтов.
+    '''
+    queryset = get_user_model().objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = serializers.DeleteUserViewSerializer
+    http_method_names = ['delete', ]
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        user.email = f'z{user.id}@deleted.account'
+        user.set_password(os.getenv('REMOTE_USER_PASSWORD'))
+        user.is_active = False
+        user.username = None
+        user.phone_number = None
+        user.phone_verified = False
+        user.first_name = None
+        user.last_name = None
+        user.save()
+
+        return Response({'success': f'{messages.TEXT_SUCCESSFUL_USER_DELETE}'},
+                        status=status.HTTP_200_OK)

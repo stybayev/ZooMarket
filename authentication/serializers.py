@@ -157,7 +157,6 @@ class PhoneVerificationSerializer(serializers.ModelSerializer):
         fields = ['phone_verification_code', ]
 
 
-
 class UpdateProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=255, min_length=3)
     last_name = serializers.CharField(max_length=255, min_length=3)
@@ -172,3 +171,9 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
                   'first_name', 'last_name',
                   'gender', 'date_of_birth',
                   )
+
+
+class DeleteUserViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = []
