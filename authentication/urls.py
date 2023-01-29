@@ -1,6 +1,6 @@
 from authentication.views import (
     RegisterView, LoginAPIView,
-    UserDetailView, LogoutAPIView, UpdateProfileView,
+    UserDetailView, LogoutAPIView, UpdateProfileView, DeleteUserView,
 )
 
 from django.urls import path
@@ -25,4 +25,8 @@ urlpatterns = [
     path('user_update/',
          UpdateProfileView.as_view(),
          name='user_update'),
+
+    path('delete_user/',
+         DeleteUserView.as_view(),
+         name='delete_user')
 ]

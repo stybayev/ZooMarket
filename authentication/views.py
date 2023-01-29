@@ -203,10 +203,16 @@ class DeleteUserView(generics.GenericAPIView):
         user.set_password(os.getenv('REMOTE_USER_PASSWORD'))
         user.is_active = False
         user.username = None
+        user.gender = None
         user.phone_number = None
         user.phone_verified = False
+        user.date_of_birth = None
         user.first_name = None
         user.last_name = None
+        user.add_pet_status = None
+        user.loyalty_level = None
+        user.is_fill = False
+        user.uid = None
         user.save()
 
         return Response({'success': f'{messages.TEXT_SUCCESSFUL_USER_DELETE}'},

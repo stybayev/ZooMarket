@@ -88,9 +88,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(max_length=255, db_index=True, blank=True, null=True)
 
-    first_name = models.CharField(max_length=255, verbose_name='Имя')
+    first_name = models.CharField(max_length=255, verbose_name='Имя', null=True, blank=True)
 
-    last_name = models.CharField(max_length=255, verbose_name='Фамилия')
+    last_name = models.CharField(max_length=255, verbose_name='Фамилия', null=True, blank=True)
 
     gender = models.CharField(choices=GENDER_CHOICES, max_length=100, verbose_name='Пол',
                               null=True, blank=True)
