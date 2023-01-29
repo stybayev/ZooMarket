@@ -1,5 +1,11 @@
 from django.contrib import admin
 from . import models
+from .models import Product
+
+
+class PetInline(admin.StackedInline):
+    model = Product
+    extra = 1
 
 
 @admin.register(models.Product)
@@ -16,6 +22,7 @@ class ProductAdmin(admin.ModelAdmin):
         'brand',
     )
     ordering = ('created_at',)
+    exclude = ('product_list',)
 
 
 @admin.register(models.ProductList)
@@ -25,6 +32,7 @@ class ProductListAdmin(admin.ModelAdmin):
         'created_at')
     list_filter = ['user', 'created_at']
     ordering = ('created_at',)
+    inlines = [PetInline, ]
 
 
 @admin.register(models.PriceProduct)

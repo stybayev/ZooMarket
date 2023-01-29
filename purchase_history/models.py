@@ -20,11 +20,11 @@ class Product(models.Model):
     created_at = models.DateField(auto_now=True, verbose_name='Дата товара')
 
     def __str__(self):
-        return f'Товар{self.title}'
+        return f'{self.title}'
 
     class Meta:
-        verbose_name = "01 Описание товара"
-        verbose_name_plural = "01 Описания товаров"
+        verbose_name = "01 Товар"
+        verbose_name_plural = "01 Товары"
         ordering = ['brand']
 
 
