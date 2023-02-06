@@ -7,10 +7,6 @@ from django.db import models
 
 
 class Product(models.Model):
-    product_list = models.ForeignKey('purchase_history.ProductList', on_delete=models.CASCADE,
-                                     null=True, blank=True, verbose_name='Список товаров',
-                                     related_name='product_descriptions')
-
     vendor_code = models.CharField(max_length=255, null=True, blank=True, verbose_name='Артикул товара')
 
     title = models.CharField(max_length=255, null=True, blank=True, verbose_name='Название товара')
@@ -34,12 +30,19 @@ class Product(models.Model):
 
 
 class ProductList(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
-                             verbose_name='Покупатель', related_name='product_list')
+    product = models.ForeignKey('purchase_history.Product', on_delete=models.PROTECT,
+                                verbose_name='Товар', related_name='product_list')
+
+    quantity_product = models.PositiveIntegerField(verbose_name='Количества товара')
+
+    price = models.DecimalField(null=True, blank=True,
+                                max_digits=19, decimal_places=2,
+                                verbose_name='Стоимость товара за 1 единицу/штуку')
+
     created_at = models.DateField(auto_now=True, verbose_name='Дата создания списка товара')
 
-    def __str__(self):
-        return f'Список товаров покупателя {self.user} за {self.created_at}'
+    # def __str__(self):
+    #     return f'Список товаров покупателя {self.user} за {self.created_at}'
 
     class Meta:
         verbose_name = "02 Список товаров"
@@ -69,29 +72,3 @@ class PriceProduct(models.Model):
         verbose_name = "03 Стоимость товара за 1 единицу/штуку"
         verbose_name_plural = "03 Стоимости товаров за 1 единицу/штуку"
         ordering = ['price_date']
-
-
-'''
-Модель для количества товаров
-'''
-
-
-class QuantityProduct(models.Model):
-    product_list = models.ForeignKey('purchase_history.ProductList', on_delete=models.CASCADE,
-                                     null=True, blank=True, verbose_name='Список товаров',
-                                     related_name='quantity_product')
-
-    product = models.ForeignKey('purchase_history.Product', on_delete=models.CASCADE,
-                                verbose_name='Товар', related_name='quantity_product')
-
-    quantity_product = models.PositiveIntegerField(verbose_name='Количества товаров')
-
-    created_at = models.DateField(auto_now=True, verbose_name='Дата добавления количества')
-
-    def __str__(self):
-        return f'Продукт - {self.product}/Количество - {self.quantity_product}'
-
-    class Meta:
-        verbose_name = "04 Количество товара"
-        verbose_name_plural = "04 Количества товаров"
-        ordering = ['created_at']
