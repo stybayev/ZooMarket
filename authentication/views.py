@@ -168,15 +168,15 @@ class UpdateProfileView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        print(serializer.data)
 
         user = request.user
 
-        user.email = serializer.data.get('email')
-        user.phone_number = serializer.data.get('phone_number')
-        user.first_name = serializer.data.get('first_name')
-        user.last_name = serializer.data.get('last_name')
-        user.gender = serializer.data.get('gender')
-        user.date_of_birth = serializer.data.get('date_of_birth')
+        user.email = serializer.data.get('email', user.email)
+        user.first_name = serializer.data.get('first_name', user.first_name)
+        user.last_name = serializer.data.get('last_name', user.last_name)
+        user.gender = serializer.data.get('gender', user.gender)
+        user.date_of_birth = serializer.data.get('date_of_birth', user.date_of_birth)
         user.save()
 
         return Response(

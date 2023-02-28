@@ -158,16 +158,15 @@ class PhoneVerificationSerializer(serializers.ModelSerializer):
 
 
 class UpdateProfileSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(max_length=255, min_length=3)
-    last_name = serializers.CharField(max_length=255, min_length=3)
-    gender = serializers.ChoiceField(choices=get_user_model().GENDER_CHOICES)
-    date_of_birth = serializers.DateField()
-    email = serializers.EmailField(max_length=255, min_length=3)
+    first_name = serializers.CharField(max_length=255, min_length=3, required=False, )
+    last_name = serializers.CharField(max_length=255, min_length=3, required=False, )
+    gender = serializers.ChoiceField(choices=get_user_model().GENDER_CHOICES, required=False, )
+    date_of_birth = serializers.DateField(required=False, )
+    email = serializers.EmailField(max_length=255, min_length=3, required=False, )
 
     class Meta:
         model = get_user_model()
         fields = ('email',
-                  'phone_number',
                   'first_name', 'last_name',
                   'gender', 'date_of_birth',
                   )
