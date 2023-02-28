@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
+from pet.models import PetType
 from .exceptions import (TokenErrorAPIException,
                          AuthenticationFailedAPIException,
                          AuthenticationFailedIsActiveAPIException)

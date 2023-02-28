@@ -2,6 +2,9 @@ import os
 from random import randint
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
+
+from pet.models import PetType
+from pet.serializers import PetTypeSerializer
 from .exceptions import (IncorrectPhoneVerificationCodeException,
                          SmsSendingError, InvalidTokenAPIException)
 from authentication import serializers, messages
@@ -217,3 +220,23 @@ class DeleteUserView(generics.GenericAPIView):
 
         return Response({'success': f'{messages.TEXT_SUCCESSFUL_USER_DELETE}'},
                         status=status.HTTP_200_OK)
+
+
+class PetTypeApiView(generics.ListAPIView):
+    """
+    Роут для просмотра списка всех видов
+    пимотмцев, которые есть в БД
+    """
+    permission_classes = [permissions.AllowAny, ]
+    queryset = PetType.objects.all()
+    serializer_class = PetTypeSerializer
+
+    def get(self, request, *args, **kwargs):
+        print(123)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status.HTTP_204_NO_CONTENT)
+
+

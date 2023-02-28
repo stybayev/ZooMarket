@@ -5,7 +5,7 @@ from rest_framework import serializers
 class PetTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PetType
-        fields = ['title']
+        fields = ['title', ]
 
 
 class PetCreateSerializer(serializers.ModelSerializer):
