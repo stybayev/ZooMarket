@@ -171,7 +171,6 @@ class UpdateProfileView(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        print(serializer.data)
 
         user = request.user
 
@@ -180,6 +179,7 @@ class UpdateProfileView(generics.UpdateAPIView):
         user.last_name = serializer.data.get('last_name', user.last_name)
         user.gender = serializer.data.get('gender', user.gender)
         user.date_of_birth = serializer.data.get('date_of_birth', user.date_of_birth)
+        user.update_is_fill()
         user.save()
 
         return Response(
@@ -238,5 +238,3 @@ class PetTypeApiView(generics.ListAPIView):
         serializer.save()
 
         return Response(serializer.data, status.HTTP_204_NO_CONTENT)
-
-

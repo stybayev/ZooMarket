@@ -143,3 +143,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         }
 
         return token
+
+    def update_is_fill(self):
+        if self.first_name and self.last_name and self.gender and self.email and self.date_of_birth:
+            self.is_fill = True
+        else:
+            self.is_fill = False
+        self.save()
