@@ -34,35 +34,32 @@ default_app = firebase_admin.initialize_app(cred)
 
 def firebase_validation(id_token):
     '''
-    Эта функция получает идентификатор токен, отправленный Firebase,
+    Эта функция получает идентификатор токена, отправленный Firebase,
     и проверяет токен идентификатора, а затем проверяет, существует ли пользователь в
     Firebase или нет, если он существует, он возвращает True, иначе False
     '''
     try:
         decoded_token = auth.verify_id_token(id_token)
         uid = decoded_token['uid']
+        phone_number = decoded_token['phone_number']
         provider = decoded_token['firebase']['sign_in_provider']
-        image = None
-        name = None
-        if "name" in decoded_token:
-            name = decoded_token['name']
-        if "picture" in decoded_token:
-            image = decoded_token['picture']
-        try:
-            user = auth.get_user(uid)
-            email = user.email
-            if user:
-                return {
-                    "status": True,
-                    "uid": uid,
-                    "email": email,
-                    "name": name,
-                    "provider": provider,
-                    "image": image
-                }
-            else:
-                return False
-        except UserNotFoundError:
-            print("user not exist")
+        image = decoded_token.get('picture')
+        name = decoded_token.get('name')
+
+        user = auth.get_user(uid)
+        email = user.email
+        return {
+            "status": True,
+            "uid": uid,
+            "email": email,
+            "name": name,
+            "provider": provider,
+            "image": image,
+            "phone_number": phone_number
+        }
+
+    except UserNotFoundError:
+        return False
+
     except (ExpiredIdTokenError, InvalidIdTokenError):
-        print("invalid token")
+        return False
