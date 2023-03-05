@@ -65,7 +65,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
-CSRF_TRUSTED_ORIGINS = ['https://*.zoo-market.ddns.net', 'https://127.0.0.1:8080']
+CSRF_TRUSTED_ORIGINS = ['https://*.zoo-market.ddnsking.com', 'https://127.0.0.1:8080']
 
 CSRF_COOKIE_SECURE = False
 
