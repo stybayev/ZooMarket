@@ -162,7 +162,10 @@ class LogoutAPIView(generics.GenericAPIView):
 
 class UpdateProfileView(generics.UpdateAPIView):
     """
-    Роут для изменения данных пользователя
+    Роут для изменения данных пользователя.
+    Поле is_fill = True если значения полей - email, first_name, last_name, date_of_birth, gender
+    будут заполнены, иначе
+    значение is_fill будет False
     """
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = serializers.UpdateProfileSerializer
@@ -220,21 +223,3 @@ class DeleteUserView(generics.GenericAPIView):
 
         return Response({'success': f'{messages.TEXT_SUCCESSFUL_USER_DELETE}'},
                         status=status.HTTP_200_OK)
-
-
-class PetTypeApiView(generics.ListAPIView):
-    """
-    Роут для просмотра списка всех видов
-    пимотмцев, которые есть в БД
-    """
-    permission_classes = [permissions.AllowAny, ]
-    queryset = PetType.objects.all()
-    serializer_class = PetTypeSerializer
-
-    def get(self, request, *args, **kwargs):
-        print(123)
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status.HTTP_204_NO_CONTENT)

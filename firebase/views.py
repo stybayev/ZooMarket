@@ -11,6 +11,7 @@ from firebase.services import firebase_validation
 
 
 class CheckUserStatusAPIView(GenericAPIView):
+    serializer_class = None
     """
     API для проверки пользователя в БД
     """

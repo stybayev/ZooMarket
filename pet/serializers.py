@@ -9,7 +9,7 @@ class PetTypeSerializer(serializers.ModelSerializer):
 
 
 class PetCreateSerializer(serializers.ModelSerializer):
-    pet_type = serializers.CharField()
+    pet_type = serializers.IntegerField()
 
     class Meta:
         model = Pet
@@ -27,7 +27,7 @@ class PetListSerializer(serializers.ModelSerializer):
 
 
 class PetUpdateSerializer(serializers.ModelSerializer):
-    pet_type = serializers.CharField()
+    pet_type = serializers.IntegerField()
 
     class Meta:
         model = Pet

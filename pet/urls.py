@@ -1,6 +1,4 @@
 from django.urls import path, include
-
-from authentication.views import PetTypeApiView
 from .views import *
 from rest_framework.routers import DefaultRouter
 
