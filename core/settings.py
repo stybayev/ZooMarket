@@ -65,14 +65,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
-CSRF_TRUSTED_ORIGINS = ['https://*.zoo-market.ddnsking.com', 'https://127.0.0.1:8080']
+CSRF_TRUSTED_ORIGINS = ['https://*.ec2-35-158-125-225.eu-central-1.compute.amazonaws.com', 'https://127.0.0.1:8080']
 
 CSRF_COOKIE_SECURE = False
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'http://ec2-35-158-125-225.eu-central-1.compute.amazonaws.com',
     "http://0.0.0.0:8080",
     "http://127.0.0.1:8000",
 ]
