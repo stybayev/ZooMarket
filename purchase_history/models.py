@@ -29,7 +29,7 @@ user, total_cost, discount, total_cost_with_discountи accumulated_bonuses.
 class Purchase(models.Model):
     date = models.DateTimeField(verbose_name='Дата покупки')
     point_of_sale = models.ForeignKey(PointOfSale, on_delete=models.PROTECT, verbose_name='Точка продаж')
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Покупатель')
+    user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, verbose_name='Покупатель')
     total_cost = models.DecimalField(max_digits=19, decimal_places=2, verbose_name='Сумма покупки без скидки')
     discount = models.DecimalField(max_digits=19, decimal_places=2, verbose_name='Сумма скидки')
     total_cost_with_discount = models.DecimalField(max_digits=19, decimal_places=2,
@@ -69,7 +69,8 @@ Purchase модель через внешний ключ и на Product мод�
 
 
 class ProductInPurchase(models.Model):
-    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE, verbose_name='Покупка')
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE, verbose_name='Покупка',
+                                 related_name='product_list')
     product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name='Товар')
     quantity = models.PositiveIntegerField(verbose_name='Количество товара')
     price = models.DecimalField(max_digits=19, decimal_places=2, verbose_name='Стоимость товара за 1 единицу/штуку')
