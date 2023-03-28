@@ -72,7 +72,7 @@ CSRF_COOKIE_SECURE = False
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'https://zoo-market.ddns',
+    'http://ec2-35-158-125-225.eu-central-1.compute.amazonaws.com',
     "http://0.0.0.0:8080",
     "http://127.0.0.1:8000",
 ]
